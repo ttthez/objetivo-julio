@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Objetivo Julio · La Sinergia</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --negro:#0d0a08;
+    --negro-2:#16110d;
+    --carbon:#1f1813;
+    --madera:#3a2a1c;
+    --fuego:#e23a16;
+    --fuego-claro:#ff5a2c;
+    --verde:#3fae5c;
+    --crema:#f4ece1;
+    --crema-tenue:#cdbfae;
+    --gris:#8a7d6e;
+    --linea:rgba(244,236,225,.12);
+    --max:760px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--negro);
+    color:var(--crema);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:40px 20px 80px;
+  }
+  .wrap{max-width:var(--max);margin:0 auto}
+
+  header{text-align:center;margin-bottom:36px}
+  .kicker{
+    color:var(--fuego-claro);font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;font-size:.8rem;margin-bottom:6px;
+  }
+  h1{font-size:2rem;font-weight:900;letter-spacing:-.5px}
+  h1 b{color:var(--fuego)}
+  .sub{color:var(--crema-tenue);margin-top:8px;font-size:.95rem}
+
+  .card{
+    background:var(--negro-2);
+    border:1px solid var(--linea);
+    border-radius:20px;
+    padding:28px;
+    margin-bottom:20px;
+  }
+  .card-titulo{font-weight:800;font-size:1.05rem;margin-bottom:16px}
+
+  .totales{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:16px;flex-wrap:wrap;gap:8px;
+  }
+  .totales .actual{font-size:2.1rem;font-weight:900;color:var(--crema)}
+  .totales .meta{color:var(--gris);font-size:1rem;font-weight:600}
+
+  .barra-ext{
+    width:100%;height:26px;background:var(--carbon);
+    border-radius:999px;overflow:hidden;border:1px solid var(--linea);
+  }
+  .barra-int{
+    height:100%;border-radius:999px;
+    background:linear-gradient(90deg,var(--fuego),var(--fuego-claro));
+    display:flex;align-items:center;justify-content:flex-end;
+    transition:width .6s cubic-bezier(.4,0,.2,1);
+    min-width:0;
+  }
+  .barra-int.completo{background:linear-gradient(90deg,#2f9950,var(--verde))}
+  .barra-pct{
+    font-size:.75rem;font-weight:800;color:#fff;padding-right:10px;
+    text-shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+
+  .stats{display:flex;justify-content:space-between;margin-top:14px;flex-wrap:wrap;gap:10px}
+  .stat{flex:1;min-width:140px}
+  .stat .label{color:var(--gris);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+  .stat .val{font-size:1.15rem;font-weight:800;margin-top:2px}
+
+  .motivo{
+    margin-top:18px;padding:14px 16px;border-radius:14px;
+    background:rgba(226,58,22,.1);border:1px solid rgba(226,58,22,.25);
+    font-weight:600;font-size:.92rem;text-align:center;
+  }
+  .motivo.completo{
+    background:rgba(63,174,92,.12);border-color:rgba(63,174,92,.3);
+  }
+
+  .sync-row{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:14px;font-size:.78rem;
+  }
+  .sync-estado{color:var(--gris)}
+
+  form{display:flex;gap:10px;flex-wrap:wrap}
+  input, select{
+    background:var(--carbon);border:1px solid var(--linea);color:var(--crema);
+    border-radius:12px;padding:12px 14px;font-family:inherit;font-size:.95rem;
+    flex:1;min-width:120px;
+  }
+  input::placeholder{color:var(--gris)}
+  input:focus, select:focus{outline:none;border-color:var(--fuego)}
+  input[type="date"]{flex:0 0 150px;color-scheme:dark}
+  input[type="number"]{flex:0 0 160px}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-weight:700;font-size:.95rem;
+    padding:12px 22px;border-radius:12px;border:none;cursor:pointer;
+    transition:transform .15s ease, background .2s ease;
+    white-space:nowrap;
+  }
+  .btn-fuego{background:var(--fuego);color:#fff}
+  .btn-fuego:hover{background:var(--fuego-claro);transform:translateY(-1px)}
+  .btn-fuego:disabled{opacity:.6;cursor:default}
+
+  .lista{margin-top:8px}
+  .item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 4px;border-bottom:1px solid var(--linea);gap:10px;
+  }
+  .item:last-child{border-bottom:none}
+  .item-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .item-desc{font-weight:600;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item-fecha{font-size:.78rem;color:var(--gris)}
+  .item-monto{font-weight:800;color:var(--verde);white-space:nowrap;margin-left:auto}
+  .item-del{
+    background:none;border:none;color:var(--gris);cursor:pointer;
+    font-size:1.1rem;padding:4px 8px;border-radius:8px;line-height:1;
+  }
+  .item-del:hover{color:var(--fuego);background:rgba(226,58,22,.1)}
+
+  .vacio{color:var(--gris);text-align:center;padding:20px 0;font-size:.9rem}
+
+  .footer-row{display:flex;justify-content:center;gap:14px;margin-top:6px;flex-wrap:wrap}
+  .link-btn{
+    background:none;border:none;color:var(--gris);font-size:.8rem;
+    cursor:pointer;text-decoration:underline;font-family:inherit;
+  }
+  .link-btn:hover{color:var(--crema)}
+
+  .stock-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 4px;border-bottom:1px solid var(--linea);gap:10px;flex-wrap:wrap;
+  }
+  .stock-item:last-child{border-bottom:none}
+  .stock-nombre{font-weight:700;font-size:.95rem}
+  .stock-cantidad{font-weight:800;color:var(--crema);white-space:nowrap;font-size:1rem;min-width:46px;text-align:right}
+  .stock-acciones{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+  .venta-fila{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .venta-fila select{flex:2;min-width:150px}
+  .venta-fila input{flex:0 0 90px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">Julio 2026</div>
+    <h1>Objetivo <b>$7.000.000</b></h1>
+    <div class="sub">Ingresos de La Sinergia este mes</div>
+  </header>
+
+  <div class="card">
+    <div class="totales">
+      <div class="actual" id="totalActual">$0</div>
+      <div class="meta">de $7.000.000</div>
+    </div>
+    <div class="barra-ext">
+      <div class="barra-int" id="barraInt" style="width:0%">
+        <span class="barra-pct" id="barraPct"></span>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="label">Falta</div>
+        <div class="val" id="statFalta">$7.000.000</div>
+      </div>
+      <div class="stat">
+        <div class="label">Ingresos anotados</div>
+        <div class="val" id="statCant">0</div>
+      </div>
+    </div>
+    <div class="motivo" id="motivo"></div>
+    <div class="sync-row">
+      <span class="sync-estado" id="estado">Cargando…</span>
+      <button class="link-btn" id="btnRefrescar">Actualizar ahora</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <form id="form">
+      <input type="date" id="fecha" required>
+      <input type="text" id="desc" placeholder="Descripción (ej: Catering Pérez)" required>
+      <input type="number" id="monto" placeholder="Monto $" min="1" step="1" required>
+      <button type="submit" class="btn btn-fuego" id="btnAnotar">Anotar</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="lista" id="lista"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo">Stock de pizzas</div>
+    <div class="totales">
+      <div class="actual" id="stockTotal">0</div>
+      <div class="meta">pizzas en stock</div>
+    </div>
+    <div class="stock-list" id="stockLista"></div>
+    <div class="footer-row" style="margin-top:16px">
+      <button class="link-btn" id="btnAgregarSabor">+ Agregar sabor</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo">Registrar venta</div>
+    <div id="ventaFilas"></div>
+    <div class="footer-row" style="justify-content:flex-start;margin:8px 0 18px">
+      <button type="button" class="link-btn" id="btnAgregarFila">+ Agregar otro sabor a la venta</button>
+    </div>
+    <button type="button" class="btn btn-fuego" id="btnRegistrarVenta" style="width:100%">Registrar venta y descontar stock</button>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo">Ventas de pizzas registradas</div>
+    <div class="lista" id="listaVentas"></div>
+  </div>
+
+  <div class="footer-row">
+    <button class="link-btn" id="btnExport">Exportar backup</button>
+    <button class="link-btn" id="btnImport">Importar backup</button>
+    <button class="link-btn" id="btnReset">Reiniciar mes</button>
+  </div>
+  <input type="file" id="fileImport" accept="application/json" style="display:none">
+</div>
+
+<script>
+  const META = 7000000;
+  const FIREBASE_BASE = 'https://objetivo-julio-default-rtdb.firebaseio.com/';
+  const INGRESOS_URL = FIREBASE_BASE + 'datos.json';
+  const PIZZAS_URL = FIREBASE_BASE + 'pizzas.json';
+  const CACHE_KEY_INGRESOS = 'lasinergia_objetivo_julio_2026_cache';
+  const CACHE_KEY_PIZZAS = 'lasinergia_objetivo_julio_2026_pizzas_cache';
+  const SABORES_DEFAULT = ['Margarita','Honey pesto','Diavola','Di patate','Caramellata','4 Formaggi'];
+
+  let items = [];
+  let pizzas = { stock: [], ventas: [] };
+  let ventaDraft = [{ sabor: null, cantidad: 1 }];
+
+  const fmt = n => '$' + Math.round(n).toLocaleString('es-AR');
+
+  function leerCache(key, fallback){
+    try{
+      const v = JSON.parse(localStorage.getItem(key));
+      return v == null ? fallback : v;
+    }catch(e){ return fallback; }
+  }
+  function guardarCache(key, data){
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  async function fetchJSON(url){
+    const res = await fetch(url, { cache: 'no-store' });
+    if(!res.ok) throw new Error('status ' + res.status);
+    return await res.json();
+  }
+  async function guardarJSON(url, data){
+    const res = await fetch(url, { method: 'PUT', body: JSON.stringify(data) });
+    if(!res.ok) throw new Error('status ' + res.status);
+  }
+
+  function setEstado(texto, ok){
+    const el = document.getElementById('estado');
+    el.textContent = texto;
+    el.style.color = ok ? 'var(--gris)' : 'var(--fuego-claro)';
+  }
+
+  async function refrescarTodo(mostrarCarga){
+    if(mostrarCarga) setEstado('Actualizando…', true);
+    let ok = true;
+
+    try{
+      items = (await fetchJSON(INGRESOS_URL)) || [];
+      guardarCache(CACHE_KEY_INGRESOS, items);
+    }catch(e){
+      items = leerCache(CACHE_KEY_INGRESOS, []);
+      ok = false;
+    }
+
+    try{
+      const remoto = await fetchJSON(PIZZAS_URL);
+      if(remoto && Array.isArray(remoto.stock)){
+        pizzas = { stock: remoto.stock, ventas: Array.isArray(remoto.ventas) ? remoto.ventas : [] };
+      }else{
+        pizzas = { stock: SABORES_DEFAULT.map(nombre => ({ nombre, cantidad: 0 })), ventas: [] };
+        await guardarJSON(PIZZAS_URL, pizzas);
+      }
+      guardarCache(CACHE_KEY_PIZZAS, pizzas);
+    }catch(e){
+      pizzas = leerCache(CACHE_KEY_PIZZAS, { stock: SABORES_DEFAULT.map(nombre => ({ nombre, cantidad: 0 })), ventas: [] });
+      ok = false;
+    }
+
+    setEstado(ok ? 'Sincronizado ✓' : 'Sin conexión — mostrando última copia guardada', ok);
+    renderIngresos();
+    renderPizzas();
+  }
+
+  async function persistirIngresos(){
+    guardarCache(CACHE_KEY_INGRESOS, items);
+    renderIngresos();
+    try{
+      await guardarJSON(INGRESOS_URL, items);
+      setEstado('Sincronizado ✓', true);
+    }catch(e){
+      setEstado('No se pudo sincronizar — vas a reintentar al actualizar', false);
+    }
+  }
+
+  async function persistirPizzas(){
+    guardarCache(CACHE_KEY_PIZZAS, pizzas);
+    renderPizzas();
+    try{
+      await guardarJSON(PIZZAS_URL, pizzas);
+      setEstado('Sincronizado ✓', true);
+    }catch(e){
+      setEstado('No se pudo sincronizar — vas a reintentar al actualizar', false);
+    }
+  }
+
+  function mensajeMotivo(pct, total){
+    if(total <= 0) return 'Anotá tu primer ingreso del mes y arrancamos a sumar 💪';
+    if(pct >= 100) return '¡Objetivo cumplido! 🎉 Superaste los $7.000.000. Grande el equipo.';
+    if(pct >= 75) return `Estás en la recta final: ${pct.toFixed(0)}% del objetivo. ¡Sigue así!`;
+    if(pct >= 50) return `Vas por la mitad del camino (${pct.toFixed(0)}%). ¡A no aflojar!`;
+    if(pct >= 25) return `Buen arranque: ya llevás el ${pct.toFixed(0)}% del objetivo.`;
+    return `Primeros pasos del mes: ${pct.toFixed(0)}% del objetivo. Cada ingreso suma.`;
+  }
+
+  function formatoFecha(f){
+    const [y,m,d] = f.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
+  function escapeHtml(s){
+    const div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  function renderIngresos(){
+    const ordenados = items.slice().sort((a,b) => b.fecha.localeCompare(a.fecha));
+    const total = items.reduce((s,i) => s + i.monto, 0);
+    const pct = Math.min((total / META) * 100, 100);
+    const pctReal = (total / META) * 100;
+
+    document.getElementById('totalActual').textContent = fmt(total);
+    document.getElementById('statFalta').textContent = fmt(Math.max(META - total, 0));
+    document.getElementById('statCant').textContent = items.length;
+
+    const barra = document.getElementById('barraInt');
+    barra.style.width = pct + '%';
+    barra.classList.toggle('completo', pctReal >= 100);
+    document.getElementById('barraPct').textContent = pct > 8 ? pctReal.toFixed(0) + '%' : '';
+
+    document.getElementById('motivo').textContent = mensajeMotivo(pctReal, total);
+    document.getElementById('motivo').classList.toggle('completo', pctReal >= 100);
+
+    const lista = document.getElementById('lista');
+    if(ordenados.length === 0){
+      lista.innerHTML = '<div class="vacio">Todavía no anotaste ningún ingreso.</div>';
+      return;
+    }
+    lista.innerHTML = ordenados.map(i => `
+      <div class="item">
+        <div class="item-info">
+          <div class="item-desc">${escapeHtml(i.desc)}</div>
+          <div class="item-fecha">${formatoFecha(i.fecha)}</div>
+        </div>
+        <div class="item-monto">${fmt(i.monto)}</div>
+        <button class="item-del" data-id="${i.id}" title="Eliminar">✕</button>
+      </div>
+    `).join('');
+
+    lista.querySelectorAll('.item-del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        items = items.filter(i => String(i.id) !== id);
+        persistirIngresos();
+      });
+    });
+  }
+
+  function renderPizzas(){
+    renderStockLista();
+    renderVentaForm();
+    renderVentasLista();
+  }
+
+  function renderStockLista(){
+    const total = pizzas.stock.reduce((s,i) => s + i.cantidad, 0);
+    document.getElementById('stockTotal').textContent = total;
+
+    const cont = document.getElementById('stockLista');
+    if(pizzas.stock.length === 0){
+      cont.innerHTML = '<div class="vacio">No hay sabores cargados todavía.</div>';
+      return;
+    }
+    cont.innerHTML = pizzas.stock.map(s => `
+      <div class="stock-item">
+        <div class="stock-nombre">${escapeHtml(s.nombre)}</div>
+        <div class="stock-cantidad">${s.cantidad} u.</div>
+        <div class="stock-acciones">
+          <button class="link-btn" data-reponer="${escapeHtml(s.nombre)}">+ Reponer</button>
+          <button class="link-btn" data-editar="${escapeHtml(s.nombre)}">Editar</button>
+          <button class="item-del" data-quitar="${escapeHtml(s.nombre)}" title="Quitar sabor">✕</button>
+        </div>
+      </div>
+    `).join('');
+
+    cont.querySelectorAll('[data-reponer]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nombre = btn.getAttribute('data-reponer');
+        const val = prompt(`¿Cuántas unidades de "${nombre}" sumás al stock?`, '0');
+        if(val === null) return;
+        const cant = parseInt(val);
+        if(!cant || cant <= 0) return;
+        const item = pizzas.stock.find(s => s.nombre === nombre);
+        item.cantidad += cant;
+        persistirPizzas();
+      });
+    });
+    cont.querySelectorAll('[data-editar]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nombre = btn.getAttribute('data-editar');
+        const item = pizzas.stock.find(s => s.nombre === nombre);
+        const val = prompt(`Corregir stock de "${nombre}":`, item.cantidad);
+        if(val === null) return;
+        const num = parseInt(val);
+        if(isNaN(num) || num < 0) return;
+        item.cantidad = num;
+        persistirPizzas();
+      });
+    });
+    cont.querySelectorAll('[data-quitar]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nombre = btn.getAttribute('data-quitar');
+        if(!confirm(`¿Quitar "${nombre}" del stock? (esto no borra las ventas ya registradas)`)) return;
+        pizzas.stock = pizzas.stock.filter(s => s.nombre !== nombre);
+        persistirPizzas();
+      });
+    });
+  }
+
+  function renderVentaForm(){
+    const cont = document.getElementById('ventaFilas');
+    const nombres = pizzas.stock.map(s => s.nombre);
+
+    if(nombres.length === 0){
+      cont.innerHTML = '<div class="vacio">Agregá al menos un sabor en "Stock de pizzas" para poder registrar ventas.</div>';
+      return;
+    }
+
+    ventaDraft.forEach(f => { if(!nombres.includes(f.sabor)) f.sabor = nombres[0]; });
+
+    cont.innerHTML = ventaDraft.map((fila, idx) => `
+      <div class="venta-fila">
+        <select class="venta-select" data-idx="${idx}">
+          ${nombres.map(n => `<option value="${escapeHtml(n)}" ${n === fila.sabor ? 'selected' : ''}>${escapeHtml(n)}</option>`).join('')}
+        </select>
+        <input type="number" class="venta-cantidad" data-idx="${idx}" min="1" value="${fila.cantidad}">
+        ${ventaDraft.length > 1 ? `<button type="button" class="item-del venta-quitar" data-idx="${idx}">✕</button>` : ''}
+      </div>
+    `).join('');
+
+    cont.querySelectorAll('.venta-select').forEach(sel => {
+      sel.addEventListener('change', () => {
+        ventaDraft[+sel.dataset.idx].sabor = sel.value;
+      });
+    });
+    cont.querySelectorAll('.venta-cantidad').forEach(inp => {
+      inp.addEventListener('input', () => {
+        ventaDraft[+inp.dataset.idx].cantidad = parseInt(inp.value) || 1;
+      });
+    });
+    cont.querySelectorAll('.venta-quitar').forEach(btn => {
+      btn.addEventListener('click', () => {
+        ventaDraft.splice(+btn.dataset.idx, 1);
+        renderVentaForm();
+      });
+    });
+  }
+
+  function renderVentasLista(){
+    const cont = document.getElementById('listaVentas');
+    const ordenadas = pizzas.ventas.slice().sort((a,b) => b.id - a.id);
+    if(ordenadas.length === 0){
+      cont.innerHTML = '<div class="vacio">Todavía no registraste ninguna venta de pizzas.</div>';
+      return;
+    }
+    cont.innerHTML = ordenadas.map(v => `
+      <div class="item">
+        <div class="item-info">
+          <div class="item-desc">${v.items.map(i => `${i.cantidad}x ${escapeHtml(i.nombre)}`).join(', ')}</div>
+          <div class="item-fecha">${formatoFecha(v.fecha)}</div>
+        </div>
+        <button class="item-del" data-venta-id="${v.id}" title="Deshacer (repone stock)">✕</button>
+      </div>
+    `).join('');
+
+    cont.querySelectorAll('[data-venta-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = Number(btn.getAttribute('data-venta-id'));
+        const venta = pizzas.ventas.find(v => v.id === id);
+        if(!venta) return;
+        if(!confirm('¿Deshacer esta venta? Se repone el stock descontado.')) return;
+        venta.items.forEach(i => {
+          const stockItem = pizzas.stock.find(s => s.nombre === i.nombre);
+          if(stockItem) stockItem.cantidad += i.cantidad;
+        });
+        pizzas.ventas = pizzas.ventas.filter(v => v.id !== id);
+        persistirPizzas();
+      });
+    });
+  }
+
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const fecha = document.getElementById('fecha').value;
+    const desc = document.getElementById('desc').value.trim();
+    const monto = parseFloat(document.getElementById('monto').value);
+    if(!fecha || !desc || !monto || monto <= 0) return;
+
+    items.push({ id: Date.now(), fecha, desc, monto });
+    persistirIngresos();
+
+    document.getElementById('desc').value = '';
+    document.getElementById('monto').value = '';
+    document.getElementById('fecha').value = fecha;
+  });
+
+  document.getElementById('btnRefrescar').addEventListener('click', () => refrescarTodo(true));
+
+  document.getElementById('btnAgregarSabor').addEventListener('click', () => {
+    const nombre = prompt('Nombre del sabor nuevo:');
+    if(!nombre || !nombre.trim()) return;
+    const limpio = nombre.trim();
+    if(pizzas.stock.some(s => s.nombre.toLowerCase() === limpio.toLowerCase())){
+      alert('Ese sabor ya está en la lista.');
+      return;
+    }
+    const val = prompt(`¿Cuántas unidades de "${limpio}" tenés ahora?`, '0');
+    const cantInicial = parseInt(val) || 0;
+    pizzas.stock.push({ nombre: limpio, cantidad: cantInicial });
+    persistirPizzas();
+  });
+
+  document.getElementById('btnAgregarFila').addEventListener('click', () => {
+    ventaDraft.push({ sabor: null, cantidad: 1 });
+    renderVentaForm();
+  });
+
+  document.getElementById('btnRegistrarVenta').addEventListener('click', () => {
+    const validas = ventaDraft.filter(f => f.sabor && f.cantidad > 0);
+    if(validas.length === 0) return;
+
+    const detalle = [];
+    validas.forEach(f => {
+      const stockItem = pizzas.stock.find(s => s.nombre === f.sabor);
+      if(stockItem){
+        stockItem.cantidad = Math.max(0, stockItem.cantidad - f.cantidad);
+      }
+      detalle.push({ nombre: f.sabor, cantidad: f.cantidad });
+    });
+
+    pizzas.ventas.push({
+      id: Date.now(),
+      fecha: new Date().toISOString().slice(0, 10),
+      items: detalle
+    });
+
+    ventaDraft = [{ sabor: null, cantidad: 1 }];
+    persistirPizzas();
+  });
+
+  document.getElementById('btnExport').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify({ ingresos: items, pizzas }, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'objetivo-julio-2026-backup.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btnImport').addEventListener('click', () => {
+    document.getElementById('fileImport').click();
+  });
+  document.getElementById('fileImport').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        const data = JSON.parse(ev.target.result);
+        if(Array.isArray(data)){
+          items = data;
+          persistirIngresos();
+        }else if(data && typeof data === 'object'){
+          if(Array.isArray(data.ingresos)) items = data.ingresos;
+          if(data.pizzas && Array.isArray(data.pizzas.stock)) pizzas = data.pizzas;
+          persistirIngresos();
+          persistirPizzas();
+        }else{
+          alert('El archivo no es un backup válido.');
+        }
+      }catch(err){ alert('El archivo no es un backup válido.'); }
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('btnReset').addEventListener('click', () => {
+    if(confirm('¿Seguro que querés borrar todos los ingresos anotados este mes? Te conviene exportar un backup antes. (El stock de pizzas no se toca)')){
+      items = [];
+      persistirIngresos();
+    }
+  });
+
+  // fecha de hoy por defecto
+  document.getElementById('fecha').valueAsDate = new Date();
+
+  refrescarTodo(true);
+
+  // repasa cambios hechos desde el otro dispositivo mientras la pestaña está abierta
+  setInterval(() => {
+    if(document.visibilityState === 'visible') refrescarTodo(false);
+  }, 20000);
+</script>
+
+</body>
+</html>
